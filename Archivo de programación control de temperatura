@@ -1,0 +1,50 @@
+int cross = 2; // este es el pin para detectar el cruce por cero de la señal AC
+int trip = 4; // este es el pin de disparo o TRIP
+int pot=A0;
+int valorpot;
+long delaytime = 0; //variable para medir los tiempos de disparo
+long ref=5.2;
+long x=0; //comparacion
+long z=5; //a mayor valor menor pulso, despues de 55° HABIA UN 7 INICIALMENTE 
+long c=1; //cuando esta llegando <<55°
+long d=1; //cuando esta llegando a 55° HABIA UN 2 INICIALMENTE 
+//declarar los pines como salida y se inicia TRIP en bajo
+void setup() {
+ Serial.begin(9600);
+  pinMode(cross, INPUT);//pin de cruce por cero es una entrada
+  pinMode(trip, OUTPUT);//pin de disparo es una salida 
+  digitalWrite(trip, HIGH);//incializamos la señal de disparo en cero 
+}
+
+
+// se programa el ciclo que se repetira infinitamente
+void loop() {
+
+                              valorpot = analogRead(pot);//leemos el valor del poteciometro
+                              long delaytime= map(valorpot, 0,1025, 0,8);//tiempo de espera para el TRIP
+  long x=ref - delaytime; 
+  if(pulseIn(cross , HIGH)); //Esperamos un flanco de subida(la señal AC estara en cero Voltios,esto creara una entrada alta en  el pin cross) 
+  {               
+  if(x<=5&&x>1){
+    delay(c ); //eperamos el tiempo segun la pocicion del potenciometro
+    digitalWrite(trip, HIGH); // enviamos el pulso alto de disparo
+    delayMicroseconds(10);    // por al menos 50 microsegundos 
+    digitalWrite(trip, LOW);  // luego ponesmos a bajo la linea de disparo 
+    Serial.println(x);
+          }
+    if(x==1){
+    delay(d); //eperamos el tiempo segun la pocicion del potenciometro
+    digitalWrite(trip, HIGH); // enviamos el pulso alto de disparo
+    delayMicroseconds(10);    // por al menos 50 microsegundos 
+    digitalWrite(trip, LOW);  // luego ponesmos a bajo la linea de disparo 
+    Serial.println(x);
+          }
+   if(x==0){
+    delay(z); //eperamos el tiempo segun la pocicion del potenciometro
+    digitalWrite(trip, HIGH); // enviamos el pulso alto de disparo
+    delayMicroseconds(10);    // por al menos 50 microsegundos 
+    digitalWrite(trip, LOW);  // luego ponesmos a bajo la linea de disparo 
+    Serial.println(x);
+          }
+   }
+  }
